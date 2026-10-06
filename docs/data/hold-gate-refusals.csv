@@ -1,0 +1,19 @@
+time,method,path,client
+2026-10-04 21:31:06,POST,/v1/chat/completions,curl
+2026-10-04 21:31:06,GET,/upstream/qwen38/logs,curl
+2026-10-04 21:33:55,POST,/v1/responses,codex_exec
+2026-10-04 21:34:25,POST,/v1/responses,codex_exec
+2026-10-04 21:34:55,POST,/v1/responses,codex_exec
+2026-10-04 21:35:25,POST,/v1/responses,codex_exec
+2026-10-04 21:35:55,POST,/v1/responses,codex_exec
+2026-10-04 21:36:25,POST,/v1/responses,codex_exec
+2026-10-04 21:36:55,POST,/v1/responses,codex_exec
+2026-10-04 21:37:25,POST,/v1/responses,codex_exec
+2026-10-04 22:05:56,POST,/v1/chat/completions,pi
+2026-10-04 22:05:58,POST,/v1/chat/completions,pi
+2026-10-04 22:06:02,POST,/v1/chat/completions,pi
+2026-10-04 22:06:11,POST,/v1/chat/completions,pi
+2026-10-04 22:06:12,POST,/v1/chat/completions,pi
+2026-10-04 22:06:14,POST,/v1/chat/completions,pi
+2026-10-04 22:06:18,POST,/v1/chat/completions,pi
+2026-10-04 22:06:27,POST,/v1/chat/completions,pi

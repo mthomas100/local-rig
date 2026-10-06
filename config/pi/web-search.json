@@ -1,0 +1,32 @@
+{
+  "searxngBaseUrl": "http://127.0.0.1:8080",
+  "provider": "searxng",
+  "webSearch": {
+    "allowedProviders": [
+      "searxng"
+    ]
+  },
+  "fetchRouting": {
+    "providers": [
+      "http"
+    ],
+    "allowRemoteHostedProviders": false
+  },
+  "workflow": "none",
+  "maxInlineContentChars": 20000,
+  "tools": {
+    "sourceCheck": {
+      "enabled": false
+    }
+  },
+  "image": {
+    "enabled": false
+  },
+  "allowBrowserCookies": false,
+  "autoOpenBrowser": false,
+  "ssrf": {
+    "allowRanges": [
+      "127.0.0.1/32"
+    ]
+  }
+}

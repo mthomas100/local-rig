@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="910" height="464" viewBox="0 0 910 464" role="img" aria-label="Terminal session: hold status, a request refused with 503 while the GPU is held, nothing loaded">
+<style>
+text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px;white-space:pre}
+@keyframes show{from{opacity:0}to{opacity:0}}
+@media (prefers-reduced-motion:no-preference){
+.c0{animation:show 0s 1.30s backwards, type0 0.24s steps(13) 1.30s backwards}@keyframes type0{from{clip-path:inset(0 109px 0 0)}to{clip-path:inset(0 0 0 0)}}
+.c1{animation:show 0s 1.79s backwards}
+.c2{animation:show 0s 1.85s backwards}
+.c3{animation:show 0s 2.61s backwards, type3 1.47s steps(81) 2.61s backwards}@keyframes type3{from{clip-path:inset(0 680px 0 0)}to{clip-path:inset(0 0 0 0)}}
+.c4{animation:show 0s 4.33s backwards}
+.c5{animation:show 0s 5.09s backwards, type5 1.89s steps(104) 5.09s backwards}@keyframes type5{from{clip-path:inset(0 874px 0 0)}to{clip-path:inset(0 0 0 0)}}
+.c6{animation:show 0s 6.98s backwards, type6 1.38s steps(76) 6.98s backwards}@keyframes type6{from{clip-path:inset(0 638px 0 0)}to{clip-path:inset(0 0 0 0)}}
+.c7{animation:show 0s 8.61s backwards}
+.c8{animation:show 0s 8.67s backwards}
+.c9{animation:show 0s 8.73s backwards}
+.c10{animation:show 0s 8.79s backwards}
+.c11{animation:show 0s 8.85s backwards}
+.c12{animation:show 0s 8.91s backwards}
+.c13{animation:show 0s 8.97s backwards}
+.c14{animation:show 0s 9.03s backwards}
+.c15{animation:show 0s 9.79s backwards, type15 1.31s steps(72) 9.79s backwards}@keyframes type15{from{clip-path:inset(0 605px 0 0)}to{clip-path:inset(0 0 0 0)}}
+.c16{animation:show 0s 11.35s backwards}
+.c17{animation:show 0s 12.11s backwards, type17 0.55s steps(30) 12.11s backwards}@keyframes type17{from{clip-path:inset(0 252px 0 0)}to{clip-path:inset(0 0 0 0)}}
+.c18{animation:show 0s 12.91s backwards}
+.c19{animation:show 0s 12.97s backwards}
+}
+</style>
+<rect width="100%" height="100%" rx="10" fill="#14161a"/>
+<rect width="100%" height="30" rx="10" fill="#22252b"/><rect y="20" width="100%" height="10" fill="#22252b"/>
+<circle cx="18" cy="15" r="5.5" fill="#ff5f57"/><circle cx="36" cy="15" r="5.5" fill="#febc2e"/><circle cx="54" cy="15" r="5.5" fill="#28c840"/>
+<text x="455" y="19" fill="#8b919c" text-anchor="middle" style="font-size:12px">local-rig: the gate while a render holds the GPU (real session, 2026-10-05 21:42)</text>
+<text class="c0" x="18" y="61" fill="#ffffff">$ hold status</text>
+<text class="c0" x="18" y="61" fill="#5ec4a0">$</text>
+<text class="c1" x="18" y="80" fill="#f0a35e">held: model calls wait; render "reel stills too-much" since 21:18</text>
+<text class="c2" x="18" y="99" fill="#d7dae0">  holds: render "reel stills too-much" for 23m [pid 34131 Python reel stills]  id h33f827</text>
+<text class="c3" x="18" y="127" fill="#ffffff">$ curl -s 127.0.0.1:8090/running                # read-only calls pass while held</text>
+<text class="c3" x="18" y="127" fill="#5ec4a0">$</text>
+<text class="c4" x="18" y="146" fill="#d7dae0">{"running":[]}</text>
+<text class="c5" x="18" y="174" fill="#ffffff">$ curl -si -m 5 -X POST 127.0.0.1:8090/v1/chat/completions -H 'Content-Type: application/json' -d '{"mod</text>
+<text class="c5" x="18" y="174" fill="#5ec4a0">$</text>
+<text class="c6" x="18" y="193" fill="#ffffff">el":"qwen38","messages":[{"role":"user","content":"hello"}],"max_tokens":8}'</text>
+<text class="c7" x="18" y="212" fill="#f0a35e">HTTP/1.1 503 Service Unavailable</text>
+<text class="c8" x="18" y="231" fill="#d7dae0">Content-Type: application/json</text>
+<text class="c9" x="18" y="250" fill="#f0a35e">Retry-After: 30</text>
+<text class="c10" x="18" y="269" fill="#d7dae0">Content-Length: 295</text>
+<text class="c11" x="18" y="288" fill="#d7dae0"></text>
+<text class="c12" x="18" y="307" fill="#d7dae0">{"error":{"code":503,"message":"503 Service Unavailable: the local LLM is held (render \"reel stills too</text>
+<text class="c13" x="18" y="326" fill="#d7dae0">-much\" since 21:18). This request was not sent to the model, so nothing was loaded. pi waits and contin</text>
+<text class="c14" x="18" y="345" fill="#d7dae0">ues by itself; anything else: retry when `hold status` says open.","type":"llm_held"}}</text>
+<text class="c15" x="18" y="373" fill="#ffffff">$ curl -s 127.0.0.1:8090/running                # and nothing was loaded</text>
+<text class="c15" x="18" y="373" fill="#5ec4a0">$</text>
+<text class="c16" x="18" y="392" fill="#d7dae0">{"running":[]}</text>
+<text class="c17" x="18" y="420" fill="#ffffff">$ tail -1 ~/.ds4/hold-gate.log</text>
+<text class="c17" x="18" y="420" fill="#5ec4a0">$</text>
+<text class="c18" x="18" y="439" fill="#f0a35e">Oct  5 21:42:19 [hold] refused POST /v1/chat/completions from "curl/8.7.1": render "reel stills too-much</text>
+<text class="c19" x="18" y="458" fill="#f0a35e">" since 21:18</text>
+</svg>

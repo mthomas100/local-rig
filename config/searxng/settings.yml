@@ -1,0 +1,92 @@
+# SearXNG settings for this Mac: a private, local-only metasearch endpoint
+# that pi (via its web extension) and Local Deep Research query as JSON.
+# Loaded by tools/searxng-run.sh (SEARXNG_SETTINGS_PATH). Everything not set
+# here comes from SearXNG's own searx/settings.yml (use_default_settings).
+# The secret key is NOT here: the run script exports SEARXNG_SECRET from
+# ~/.config/searxng/secret_key (0600), so this file is safe to commit.
+use_default_settings: true
+
+general:
+  instance_name: "local-rig search"
+  enable_metrics: true
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  # json is what the agents consume; html keeps the browser UI usable.
+  formats:
+    - html
+    - json
+
+server:
+  bind_address: "127.0.0.1"
+  port: 8080
+  # One trusted local client: bot detection would only ever block ourselves,
+  # and it needs a Valkey server this setup does not run.
+  limiter: false
+  public_instance: false
+  image_proxy: false
+  method: "GET"
+
+outgoing:
+  request_timeout: 4.0
+  # Caps a search at the largest timeout among the engines it uses: 28 s,
+  # under the 30 s Local Deep Research waits. Searches over the engines below
+  # still end at their own 4 s.
+  max_request_timeout: 28.0
+
+engines:
+  # Measured from this Mac on 2026-09-23 (tools/searxng-health.sh re-measures).
+  # Upstream now ships google, bing and yahoo disabled; they answered every
+  # probe here, so they are on. Engines that only ever returned a CAPTCHA,
+  # a timeout or "access denied" from this IP are off. Brave stays on even
+  # though it rate-limits bursts: SearXNG suspends a failing engine (3 min
+  # for a rate limit, 1 h for a CAPTCHA, see search.suspended_times upstream)
+  # and retries it afterwards, so a flaky engine costs nothing while it is
+  # out. Startpage and mojeek are marked inactive upstream and never load.
+  - name: google
+    disabled: false
+  - name: bing
+    disabled: false
+  - name: yahoo
+    disabled: false
+  # Added after a sustained agent load (a nine-question benchmark, twice)
+  # left only bing and yahoo answering: brave hit rate limits and google a
+  # CAPTCHA. These four answered gentle probes from this Mac with relevant
+  # results (python.org first for a Python release query). They query from
+  # their own servers or indexes, so they do not share our IP's limits with
+  # the big engines.
+  - name: privacywall
+    disabled: false
+  - name: tusksearch
+    disabled: false
+  - name: resulthunter
+    disabled: false
+  - name: yep
+    disabled: false
+  - name: qwant
+    disabled: true
+  # CAPTCHA or timeout on every probe from this IP (2026-09-23); while it
+  # timed out it held every search open until request_timeout.
+  - name: duckduckgo
+    disabled: true
+  # Infobox only, and it timed out on every probe here, which held each whole
+  # search open until request_timeout.
+  - name: wikidata
+    disabled: true
+  - name: dogpile
+    disabled: true
+  - name: findborg
+    disabled: true
+  - name: marginalia
+    disabled: true
+  # Developer sources, reachable with bangs (!npm, !hn, !hf, !crates) or the
+  # "it" category; they are not part of a plain general search.
+  - name: npm
+    disabled: false
+  - name: hackernews
+    disabled: false
+  - name: huggingface
+    disabled: false
+  - name: crates.io
+    disabled: false

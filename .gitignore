@@ -1,0 +1,7 @@
+config/llama-swap.yaml
+*.log
+__pycache__/
+hold/hold
+hold/hold.new
+.DS_Store
+.venv/

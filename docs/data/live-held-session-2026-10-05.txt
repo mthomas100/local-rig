@@ -1,0 +1,16 @@
+$ hold status
+held: model calls wait; render "reel stills too-much" since 21:18
+  holds: render "reel stills too-much" for 23m [pid 34131 Python reel stills]  id h33f827
+$ curl -s 127.0.0.1:8090/running                # read-only calls pass while held
+{"running":[]}
+$ curl -si -m 5 -X POST 127.0.0.1:8090/v1/chat/completions -H 'Content-Type: application/json' -d '{"model":"qwen38","messages":[{"role":"user","content":"hello"}],"max_tokens":8}'
+HTTP/1.1 503 Service Unavailable
+Content-Type: application/json
+Retry-After: 30
+Content-Length: 295
+
+{"error":{"code":503,"message":"503 Service Unavailable: the local LLM is held (render \"reel stills too-much\" since 21:18). This request was not sent to the model, so nothing was loaded. pi waits and continues by itself; anything else: retry when `hold status` says open.","type":"llm_held"}}
+$ curl -s 127.0.0.1:8090/running                # and nothing was loaded
+{"running":[]}
+$ tail -1 ~/.ds4/hold-gate.log
+Oct  5 21:42:19 [hold] refused POST /v1/chat/completions from "curl/8.7.1": render "reel stills too-much" since 21:18

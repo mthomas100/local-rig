@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- The hold gate (docs/hold.md): one GPU lock in front of llama-swap. It takes llama-swap's old address, so
+       every client keeps using :8090; llama-swap listens on :8091 behind it. -->
+  <key>Label</key>
+  <string>com.example.local-rig.hold-gate</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__RIG__/hold/hold</string>
+    <string>gate</string>
+    <string>--listen</string>
+    <string>127.0.0.1:8090</string>
+    <string>--upstream</string>
+    <string>http://127.0.0.1:8091</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>__RIG__</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOME</key>
+    <string>__HOME__</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <!-- every model call passes through the gate: if it stops, launchd starts it again at once -->
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>2</integer>
+  <key>ProcessType</key>
+  <string>Interactive</string>
+  <key>StandardOutPath</key>
+  <string>__HOME__/.ds4/hold-gate.log</string>
+  <key>StandardErrorPath</key>
+  <string>__HOME__/.ds4/hold-gate.log</string>
+</dict>
+</plist>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.example.local-rig.llama-swap</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/llama-swap</string>
+    <string>--config</string>
+    <string>__RIG__/config/llama-swap.yaml</string>
+    <string>--listen</string>
+    <!-- :8091 since 2026-10-04: the hold gate (docs/hold.md, com.example.local-rig.hold-gate) owns :8090, the address
+         every client uses, and passes requests through to llama-swap here. -->
+    <string>127.0.0.1:8091</string>
+    <!-- NOT the default in v255 (an early design note said it was): without this the
+         regenerated config/llama-swap.yaml is never picked up. -->
+    <string>-watch-config</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>__RIG__</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOME</key>
+    <string>__HOME__</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <!-- 2026-10-05 (found while tuning a local voice agent): ds4's GPU-queue keepalive (ds4_metal.m, default 1000 ms) keeps the
+         driver from dropping ds4-server's GPU mappings while it sits idle. On this macOS 27 Mac the mappings go after
+         about 1 s idle (0.6 s gaps stayed fast, 1.5 s and longer paid 1-4 s on the next request, measured as the
+         voice agent's LLM time to first token), so 1000 ms is too slow even before throttling. 250 ms
+         is four 1 KB kernels a second. Every ds4-server llama-swap starts inherits this; llama-server ignores it. -->
+    <key>DS4_METAL_QUEUE_KEEPALIVE_MS</key>
+    <string>250</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <!-- Interactive since 2026-10-05 (was Background, with no recorded reason; the hold gate was already Interactive).
+       Background put llama-swap and its ds4-server children in darwinbg at priority 4, where each 50 ms usleep of
+       ds4's keepalive loop stretched about fourfold (1.1 s loop measured as 4.4-4.8 s; idle GPU submissions 4.5-12 s
+       apart), so every voice turn after a pause waited 1-4 s for its first token. `taskpolicy -B -p` on the running
+       ds4-server does not lift launchd's class (tried 2026-10-05: back at priority 4 at rest). Way back: set this to
+       Background, drop the variable above, re-run tools/install-launchd.sh, `curl 127.0.0.1:8091/unload`, then
+       launchctl bootout and bootstrap the job. -->
+  <key>ProcessType</key>
+  <string>Interactive</string>
+  <key>ExitTimeOut</key>
+  <integer>300</integer>
+  <key>StandardOutPath</key>
+  <string>__HOME__/.ds4/llama-swap.log</string>
+  <key>StandardErrorPath</key>
+  <string>__HOME__/.ds4/llama-swap.log</string>
+</dict>
+</plist>

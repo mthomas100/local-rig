@@ -1,0 +1,12 @@
+# A model registry in `ds4-serve spec` format: one row per servable model, 11 pipe-separated fields plus an
+# optional 12th. This is the rig's single source of truth; tools/gen-swap-config.sh (llama-swap YAML) and
+# tools/gen-pi-models.py (pi, OMP and Codex catalogs) both derive from it. Use it with RIG_SPEC=<this file>.
+# These are the rows the author's Mac served on 2026-10-05 (per-machine KV-cache paths removed). GGUF paths are
+# relative to $DS4_DIR/gguf. trust is free text and is shown in every model picker: write "verified N/M" only after
+# N of M real agent runs passed through pi, "untested" otherwise.
+#target|engine|family|ctx|trust|dl|label|use|gguf|vision|drafter|args
+vision-500k|ds4|deepseek|500000|verified 4/4|ds4f-vision-q2|DeepSeek Vision 500k|images + very long sessions|DeepSeek-V4-Flash-Vision-Exp-IQ2XXS-w2Q2K-AProjQ8-SExpQ8-OutQ8.gguf|DeepSeek-V4-Flash-Vision-Encoder.gguf|DeepSeek-V4-Flash-Vision-Exp-DSpark-support.gguf|--prefill-chunk 2048 --kv-cache-continued-interval-tokens 65536 --kv-cache-reject-different-quant
+vision-q4-400k|ds4|deepseek|400000|verified 4/4|ds4f-vision-q2-q4|DeepSeek Vision Q2/Q4 400k|images + very long sessions, higher quality|DeepSeek-V4-Flash-Vision-Exp-Layers37-42Q4KExperts-OtherExpertLayersIQ2XXSGateUp-Q2KDown-AProjQ8-SExpQ8-OutQ8.gguf|DeepSeek-V4-Flash-Vision-Encoder.gguf|DeepSeek-V4-Flash-Vision-Exp-DSpark-support.gguf|--prefill-chunk 2048 --kv-cache-continued-interval-tokens 65536 --kv-cache-reject-different-quant
+qwen38|ds4|qwen4|262144|verified 4/5|qwen38-q4k|Qwen3.8 Flash Next|coding, fast MoE|Qwen3.8-Flash-Next-Q4.gguf|mmproj-Qwen3.8-Flash-Next-Q8_0.gguf|-
+qwen27-262k|llama|qwen|262144|verified 4/4|qwen-hf|Qwen3.8-27B 262K|one long session, native max, no drafter|qwen/Qwen3.8-27B-UD-Q5_K_M.gguf|qwen/mmproj-BF16.gguf|-|--parallel 1 -ctk q8_0 -ctv q8_0 -fa on --jinja
+qwen27-q8-8x128k|llama|qwen|1048576|verified 4/4|-|Qwen3.8-27B Q8 8 agents x 128K|parallel agents, 128K each, best at 4 or fewer|qwen/Qwen3.8-27B-Q8_0.gguf|qwen/mmproj-BF16.gguf|-|--parallel 8 -b 512 -ctk q8_0 -ctv q8_0 -fa on --jinja --ctx-checkpoints 8

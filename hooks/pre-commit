@@ -1,0 +1,19 @@
+#!/bin/sh
+# local-rig atomic-commit gate — staged-content check.
+# Refuses commits that stage generated/derived artifacts. The commit-message
+# convention (`local-rig:`) is enforced by hooks/commit-msg.
+#
+# Wired via `git config core.hooksPath hooks` so the hook itself is versioned.
+
+set -e
+
+# Generated artifacts are gitignored; this guard catches them if the ignore
+# list is ever disturbed.
+if git diff --cached --name-only | grep -Eq '^(config/llama-swap\.yaml|.*\.log)$'; then
+    echo "pre-commit: refusing commit — generated/derived file staged:"
+    git diff --cached --name-only | grep -E '^(config/llama-swap\.yaml|.*\.log)$' | sed 's/^/  /'
+    echo "These are generated (see AGENTS.md Rule 2); commit generator changes, never their output."
+    exit 1
+fi
+
+exit 0

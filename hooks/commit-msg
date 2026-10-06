@@ -1,0 +1,20 @@
+#!/bin/sh
+# local-rig atomic-commit gate — message convention.
+# Requires the commit message to start with `local-rig: <short description>`
+# (AGENTS.md Rule 1: one logical change per commit, message prefix, atomic).
+
+set -e
+
+msg_file="$1"
+first_line="$(head -n1 "$msg_file" | tr -d '\r')"
+case "$first_line" in
+    local-rig:*)
+        exit 0
+        ;;
+    *)
+        echo "commit-msg: message must start with 'local-rig: <short description>' (AGENTS.md Rule 1)."
+        echo "Got: '$first_line'"
+        echo "Example:  git commit -m 'local-rig: add a --dry-run flag to tools/verify.sh'"
+        exit 1
+        ;;
+esac
