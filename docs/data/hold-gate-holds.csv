@@ -1,32 +1,32 @@
-requested,granted,released,kind,label
-2026-10-04 21:31:02,2026-10-04 21:31:03,2026-10-04 21:31:27,manual,manual: live verification of the gate
-2026-10-04 21:33:50,2026-10-04 21:33:53,2026-10-04 21:37:53,manual,manual: codex check
-2026-10-04 21:38:37,2026-10-04 21:38:38,2026-10-04 21:40:27,render,film render: rig-smoke
-2026-10-04 21:41:14,2026-10-04 21:41:19,2026-10-04 21:41:44,m3d,m3d: concept stage
-2026-10-04 21:59:08,2026-10-04 21:59:08,2026-10-04 21:59:11,detected,outside any hold: mflux-generate
-2026-10-04 21:59:51,2026-10-04 21:59:51,2026-10-04 21:59:53,detected,outside any hold: mflux-generate
-2026-10-04 22:05:46,2026-10-04 22:06:17,2026-10-04 22:22:45,render,reel-studio: cast
-2026-10-04 22:17:08,2026-10-04 22:17:08,2026-10-04 22:17:28,detected,outside any hold: mflux-generate
-2026-10-04 22:22:44,2026-10-04 22:22:45,2026-10-04 22:44:36,render,reel-studio: sets
-2026-10-04 22:44:37,2026-10-04 22:44:37,2026-10-04 22:48:09,render,reel-studio: cast
-2026-10-04 22:48:07,2026-10-04 22:48:09,2026-10-04 23:08:49,render,reel-studio: views
-2026-10-04 23:08:47,2026-10-04 23:08:49,2026-10-04 23:14:22,render,reel-studio: stills
-2026-10-04 23:14:20,2026-10-04 23:14:22,2026-10-04 23:15:49,render,reel-studio: stills
-2026-10-04 23:16:05,2026-10-04 23:16:05,2026-10-04 23:48:22,render,reel-studio: stills
-2026-10-04 23:48:22,2026-10-04 23:48:22,2026-10-04 23:48:37,render,reel-studio: voice
-2026-10-04 23:48:37,2026-10-04 23:48:37,2026-10-04 23:50:26,render,reel-studio: music
-2026-10-04 23:50:30,2026-10-04 23:50:30,2026-10-04 23:51:44,render,reel-studio: voice
-2026-10-04 23:50:41,2026-10-04 23:51:44,2026-10-05 00:38:01,render,reel-studio: animate
-2026-10-04 23:51:20,2026-10-05 00:38:01,2026-10-05 00:42:14,render,reel-studio: music
-2026-10-05 00:07:41,2026-10-05 00:42:14,2026-10-05 00:43:21,render,reel-studio: voice
-2026-10-05 00:43:31,2026-10-05 00:43:31,2026-10-05 00:46:56,render,reel-studio: stills
-2026-10-05 00:48:07,2026-10-05 00:48:07,2026-10-05 00:56:26,render,reel-studio: animate
-2026-10-05 08:45:28,2026-10-05 08:45:36,2026-10-05 08:48:16,bench,benchmark: voice
-2026-10-05 18:24:32,2026-10-05 18:24:33,2026-10-05 18:38:11,render,reel-studio: cast
-2026-10-05 18:40:11,2026-10-05 18:40:11,2026-10-05 18:59:18,render,reel-studio: views
-2026-10-05 19:00:18,2026-10-05 19:00:18,2026-10-05 19:15:44,render,reel-studio: sets
-2026-10-05 19:17:46,2026-10-05 19:17:47,2026-10-05 19:45:11,render,reel-studio: stills
-2026-10-05 19:47:28,2026-10-05 19:47:28,2026-10-05 20:13:34,render,reel-studio: stills
-2026-10-05 20:15:48,2026-10-05 20:15:48,2026-10-05 20:35:54,render,reel-studio: stills
-2026-10-05 20:38:17,2026-10-05 20:38:18,2026-10-05 21:15:58,render,reel-studio: stills
-2026-10-05 21:18:29,2026-10-05 21:18:30,,render,reel-studio: stills
+requested_s,granted_s,released_s,kind,label
+62,63,87,manual,manual: live verification of the gate
+230,233,473,manual,manual: codex check
+517,518,627,render,film render: rig-smoke
+674,679,704,m3d,m3d: concept stage
+1748,1748,1751,detected,outside any hold: mflux-generate
+1791,1791,1793,detected,outside any hold: mflux-generate
+2146,2177,3165,render,reel-studio: cast
+2828,2828,2848,detected,outside any hold: mflux-generate
+3164,3165,4476,render,reel-studio: sets
+4477,4477,4689,render,reel-studio: cast
+4687,4689,5929,render,reel-studio: views
+5927,5929,6262,render,reel-studio: stills
+6260,6262,6349,render,reel-studio: stills
+6365,6365,8302,render,reel-studio: stills
+8302,8302,8317,render,reel-studio: voice
+8317,8317,8426,render,reel-studio: music
+8430,8430,8504,render,reel-studio: voice
+8441,8504,11281,render,reel-studio: animate
+8480,11281,11534,render,reel-studio: music
+9461,11534,11601,render,reel-studio: voice
+11611,11611,11816,render,reel-studio: stills
+11887,11887,12386,render,reel-studio: animate
+40528,40536,40696,bench,benchmark: voice
+75272,75273,76091,render,reel-studio: cast
+76211,76211,77358,render,reel-studio: views
+77418,77418,78344,render,reel-studio: sets
+78466,78467,80111,render,reel-studio: stills
+80248,80248,81814,render,reel-studio: stills
+81948,81948,83154,render,reel-studio: stills
+83297,83298,85558,render,reel-studio: stills
+85709,85710,,render,reel-studio: stills

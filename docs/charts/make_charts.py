@@ -7,13 +7,12 @@
 
     docs/charts/make_charts.py          # writes docs/media/hold-live-checks.png and hold-first-day.png
 
-The CSVs are the hold gate's own log (~/.ds4/hold-gate.log) from 2026-10-04 21:30 to 2026-10-05 21:18, reduced to
-one row per hold, refusal and unload, with job names shortened and per-machine details removed.
+The CSVs are the hold gate's own log for its first 24 hours (2026-10-04 to 2026-10-05), reduced to one row per hold,
+refusal and unload, with job names shortened and per-machine details removed. Times are seconds since the gate went
+live (columns ending in _s), not clock times.
 """
 import csv
 import pathlib
-from datetime import datetime, timedelta
-
 import matplotlib
 
 matplotlib.use("Agg")
@@ -35,7 +34,7 @@ plt.rcParams.update({
 
 
 def when(s):
-    return datetime.fromisoformat(s) if s else None
+    return float(s) if s else None  # seconds since the gate went live
 
 
 def rows(name):
@@ -43,9 +42,9 @@ def rows(name):
         return list(csv.DictReader(f))
 
 
-holds = [dict(r, requested=when(r["requested"]), granted=when(r["granted"]), released=when(r["released"]))
+holds = [dict(r, requested=when(r["requested_s"]), granted=when(r["granted_s"]), released=when(r["released_s"]))
          for r in rows("hold-gate-holds.csv")]
-refusals = [dict(r, time=when(r["time"])) for r in rows("hold-gate-refusals.csv")]
+refusals = [dict(r, time=when(r["t_s"])) for r in rows("hold-gate-refusals.csv")]
 
 
 def style(ax):
@@ -56,10 +55,9 @@ def style(ax):
     ax.set_axisbelow(True)
 
 
-# ---------- 1. the live checks, 2026-10-04 21:30-21:42 ----------
+# ---------- 1. the live checks, the gate's first 12 minutes ----------
 live = holds[:4]
-t0 = datetime(2026, 10, 4, 21, 30)
-sec = lambda t: (t - t0).total_seconds()
+sec = lambda t: t
 # The two pi answers are not in the gate's log (pi does not report to it); docs/hold.md records them: a prompt sent
 # during the first manual hold answered 9 s after `hold off`, one sent mid-render answered 17 s after the release.
 answers = {0: 9, 2: 17}
@@ -71,7 +69,7 @@ for i, h in enumerate(live):
     y = len(live) - 1 - i
     ax.barh(y, sec(h["granted"]) - sec(h["requested"]), left=sec(h["requested"]), height=0.5, color=WAIT)
     ax.barh(y, sec(h["released"]) - sec(h["granted"]), left=sec(h["granted"]), height=0.5, color=HELD)
-    held = (h["released"] - h["granted"]).total_seconds()
+    held = h["released"] - h["granted"]
     mins = f"{int(held // 60)}m{int(held % 60):02d}s" if held >= 60 else f"{int(held)} s"
     ax.text(sec(h["released"]) + 6, y + 0.3, f"held {mins}", va="center", color=INK2, fontsize=10)
     for r in refusals:
@@ -83,10 +81,10 @@ for i, h in enumerate(live):
         ax.text(t + 6, y - 0.22, f"pi answers +{answers[i]} s", va="center", color=INK, fontsize=10)
 ax.set_yticks(range(len(live)), names[::-1])
 ticks = range(0, 13 * 60, 60)
-ax.set_xticks(list(ticks), [f"21:{30 + m // 60:02d}" for m in ticks])
+ax.set_xticks(list(ticks), [f"{m // 60}" for m in ticks])
 ax.set_xlim(40, 12 * 60 + 30)
 ax.set_ylim(-0.6, len(live) - 0.4)
-ax.set_xlabel("2026-10-04, local time")
+ax.set_xlabel("minutes since the gate went live (2026-10-04)")
 ax.set_title("The hold gate's live checks: nothing reached the model while held", loc="left", color=INK,
              fontsize=13, pad=44)
 ax.legend(handles=[Patch(color=WAIT, label="drain + unload (request → grant)"),
@@ -108,14 +106,15 @@ style(ax)
 labels = []
 for i, h in enumerate(done):
     y = len(done) - 1 - i
-    wait = (h["granted"] - h["requested"]).total_seconds() / 60
-    held = (h["released"] - h["granted"]).total_seconds() / 60
+    wait = (h["granted"] - h["requested"]) / 60
+    held = (h["released"] - h["granted"]) / 60
     ax.barh(y, wait, height=0.62, color=WAIT)
     ax.barh(y, held, left=wait + (0.15 if wait else 0), height=0.62, color=HELD)
     if wait >= 5:
         ax.text(wait / 2, y, f"waited {wait:.0f} min", va="center", ha="center", color="white", fontsize=9,
                 fontweight="bold")
-    labels.append(f"{h['requested']:%a %H:%M}  {h['label']}")
+    m = int(h["requested"] // 60)
+    labels.append(f"+{m // 60}h{m % 60:02d}  {h['label']}")
 ax.set_yticks(range(len(done)), labels[::-1], fontsize=9.5)
 ax.set_ylim(-0.6, len(done) - 0.4)
 ax.set_xlabel("minutes")
@@ -124,8 +123,8 @@ ax.set_title("Every hold in the gate's first day: GPU jobs queued first come, fi
 ax.legend(handles=[Patch(color=WAIT, label="waiting (queue, drain, unload)"),
                    Patch(color=HELD, label="holding the GPU")],
           loc="upper left", bbox_to_anchor=(0, 1.04), ncol=2, frameon=False, fontsize=10, handlelength=1.2)
-fig.text(0.01, 0.008, f"Source: docs/data/hold-gate-holds.csv, from the gate's log, 2026-10-04 21:30 to 2026-10-05 21:18 "
-         f"({len(done)} finished holds;\none still running is left out). 'outside any hold' rows are GPU jobs the gate found in the "
+fig.text(0.01, 0.008, f"Source: docs/data/hold-gate-holds.csv, from the gate's log, its first 24 hours (2026-10-04 to 2026-10-05; "
+         f"{len(done)} finished holds,\none still running is left out). Row labels: time since the gate went live. 'outside any hold' rows are GPU jobs the gate found in the "
          "process table and closed the gate for.", color=INK2, fontsize=8.5)
 fig.tight_layout(rect=(0, 0.035, 1, 1))
 fig.savefig(MEDIA / "hold-first-day.png")

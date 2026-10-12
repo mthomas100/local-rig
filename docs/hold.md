@@ -1,7 +1,7 @@
 # hold — one lock for this Mac's GPU (2026-10-04)
 
-**Status: live since 2026-10-04 21:30** (`hold/switch-over.sh in`, at a quiet moment after a film
-render finished). Checked live the same evening, through pi and the real qwen38: a prompt through the
+**Status: live since 2026-10-04** (`hold/switch-over.sh in`, at a quiet moment after a film
+render finished). Checked live the same day, through pi and the real qwen38: a prompt through the
 gate; `hold on` unloaded qwen38, and for 24 s curl and `/upstream/qwen38/logs` got 503, `decide gpu` ([local-decision](https://github.com/mthomas100/local-decision)) and `m3d gpu`
 ([local-3d](https://github.com/mthomas100/local-3d)) reported the hold, llama-swap received 0 model requests and a pi prompt waited, then answered 9 s after `hold off`;
 Codex's `/v1/responses` calls were refused (it retried, honouring Retry-After) and loaded nothing; the 2-clip
@@ -13,7 +13,8 @@ already open need `/reload` (or a restart) to wait instead of being refused.
 
 This Mac can do one heavy thing at a time. A loaded local LLM (qwen38 wires about 80 GiB) and an LTX render, an
 image model or an m3d stage do not fit together, and an LLM prompted beside a render slows it about 9x (film rig,
-2026-09-23). Before this, the only guard was film-rig.ts's pi hook: it held pi's model calls while an LTX render
+2026-09-23). Before this, the only guard was a pi hook in the film rig
+([local-video](https://github.com/mthomas100/local-video)): it held pi's model calls while an LTX render
 process existed. It knew nothing of m3d or of an unload done on purpose, it started only once the render process
 existed (a busy session could reload the model in the gap after the unload and stall the film), and it bound pi
 alone: Codex, Local Deep Research and curl went straight to llama-swap, which loads whatever it is asked for.
@@ -38,14 +39,14 @@ One lock. Model calls share it while it is free; a GPU job (a render, an m3d sta
   instead of queueing behind it: run-queue.sh > story.sh > vidgen > ltx-2-mlx is one hold.
 - **GPU jobs that took no hold** (a render by hand, an old script: ltx-2-mlx, story.sh, run-queue.sh, redo.sh,
   vidgen, bin/still, mflux-generate, hy3d generate/shape/paint, comfy3d.py, skintokens-cli) close the gate too; the
-  model is unloaded once the calls in flight finish. Long-running servers (ComfyUI, mlx-serve, the dictation daemon)
+  model is unloaded once the calls in flight finish. Long-running servers (ComfyUI, mlx-serve, a dictation daemon)
   do not count: alive is not busy.
 - **While held**, the gate checks llama-swap now and then; a model loaded behind its back (someone on :8091) is
   unloaded again.
 
 ## Who waits, who is refused
 
-- **pi** (`extensions/hold.ts`, global, and loaded by `rig/film-pi.sh`): before every model call of a session whose
+- **pi** (`extensions/hold.ts`, global, and loaded explicitly by the film rig's director launcher): before every model call of a session whose
   model is served through the gate, it asks the gate and waits with a status line (`⏸ LLM held · …`). A message
   typed during a 40-minute render goes out by itself when the render ends; a hold taken between two of an agent's
   steps pauses it between them. Sessions on other providers never wait.
@@ -94,4 +95,4 @@ runs the command anyway with a warning (a missing gate also means no model can b
 
 `hold/switch-over.sh out`, or by hand: bootout `com.example.local-rig.hold-gate`, set llama-swap's plist back to
 `--listen 127.0.0.1:8090`, bootstrap it. Every
-client works as before; film-rig.ts and m3d fall back to their own unload-and-settle when `hold` cannot reach a gate.
+client works as before; the film rig and m3d fall back to their own unload-and-settle when `hold` cannot reach a gate.

@@ -90,7 +90,7 @@ var stillPath = regexp.MustCompile(`/local-video/bin/still$`)
 // gpuJob names the GPU program a command line runs, or "". It reads the program being run (the first few non-flag
 // argv items, so `zsh stories/story.sh`, `python -m ltx_pipelines` and `/usr/bin/time -l hy3d generate` are found),
 // never a word anywhere in the arguments, the way m3d's is_gpu_job does. Long-running servers (ComfyUI, mlx-serve,
-// the dictation daemon) are left out on purpose: alive is not busy, and an idle server must not keep the LLM off.
+// a dictation daemon) are left out on purpose: alive is not busy, and an idle server must not keep the LLM off.
 func gpuJob(cmd string) string {
 	argv := strings.Fields(cmd)
 	if len(argv) == 0 {

@@ -12,7 +12,7 @@ package main
 // llama-swap, and only then is granted; holds queue first come, first served. A hold dies with its processes (pid
 // plus start time, checked every ScanEvery), so a crashed job cannot keep the LLM off. Why: the rule of
 // 2026-10-04 is that nothing may bring the model back while the GPU is deliberately held, for every client (pi,
-// Codex, LDR, curl), not just pi's film-rig hook, which only knew LTX renders.
+// Codex, LDR, curl), not just the film rig's pi hook, which only knew LTX renders.
 
 import (
 	"context"

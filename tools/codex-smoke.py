@@ -9,7 +9,7 @@ containing "rig-ok", cat it, and report what it printed. A model passes when the
 file is right AND its final answer quotes it. That takes at least two tool calls
 and three requests, so it also exercises Codex replaying the model's earlier
 reasoning and tool output, which a one-shot curl never does (see "Verify through
-pi, never curl" in AGENTS.md; the same applies to Codex).
+the agent, never curl" in the README; the same applies to Codex).
 
 Runs `codex exec` against a throwaway CODEX_HOME holding only the provider and
 model catalog read from ~/.codex/config.toml, so test sessions stay out of the

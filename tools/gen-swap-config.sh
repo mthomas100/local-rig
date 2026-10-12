@@ -223,7 +223,7 @@ printf '%s\n' "$SPEC" | while IFS='|' read -r target engine family ctx trust dl 
         echo "      --ctx $ctx"
         # 64 GB since 2026-09-24: at 32 GB the disk cache was full during a pi film run and evicted
         # the live session's older checkpoints, which the next request then had to re-read from token 0
-        # (a film-rig post-mortem, 2026-09-24). The disk had 700+ GB free.
+        # (measured 2026-09-24). The disk had 700+ GB free.
         echo "      --kv-disk-dir $HOME/.ds4/kv-disk --kv-disk-space-mb ${KV_DISK_MB:-65536}"
         [ "$vision" = "-" ] || echo "      --vision $GGUF/$vision"
         if [ "$drafter" != "-" ] && [ "${DS4_DSPARK:-0}" = "1" ]; then

@@ -12,7 +12,7 @@ set -e
 if git diff --cached --name-only | grep -Eq '^(config/llama-swap\.yaml|.*\.log)$'; then
     echo "pre-commit: refusing commit — generated/derived file staged:"
     git diff --cached --name-only | grep -E '^(config/llama-swap\.yaml|.*\.log)$' | sed 's/^/  /'
-    echo "These are generated (see AGENTS.md Rule 2); commit generator changes, never their output."
+    echo "These are generated (tools/gen-swap-config.sh); commit generator changes, never their output."
     exit 1
 fi
 

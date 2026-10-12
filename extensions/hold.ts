@@ -7,16 +7,16 @@
 // not, waits with a status line, then sends the call the moment the hold ends. Nothing is lost and nothing needs
 // re-sending: a message typed during a 40-minute render simply goes out after it.
 //
-// Why here and not only in film-rig.ts: film-rig's hook only knew LTX renders and only ran in sessions that load
+// Why here and not only in the film rig's pi hook: that hook only knew LTX renders and only ran in sessions that load
 // it; the rule (2026-10-04) is that nothing may force the model back while the GPU is deliberately held, for
-// any session and any reason (renders, m3d, `hold on`). Sessions on other providers (cloud models, a ds4-serve
-// engine on :8000) never wait. If the gate does not answer, the call goes ahead: the gate's own refusal (and pi's
+// any session and any reason (renders, m3d, `hold on`). Sessions on other providers (cloud models, an engine
+// run by itself on :8000) never wait. If the gate does not answer, the call goes ahead: the gate's own refusal (and pi's
 // retry, which comes back through this hook) is the backstop.
 //
 // Compaction calls the model directly, outside the agent loop, so session_before_compact waits the same way.
 //
-// Symlinked into ~/.pi/agent/extensions/ (global); the film rig's director launcher (local-video, rig/film-pi.sh)
-// loads it explicitly next to film-rig.ts.
+// Symlinked into ~/.pi/agent/extensions/ (global); the film rig's director launcher (in local-video) loads it
+// explicitly next to its own extension.
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import * as path from "node:path";
 

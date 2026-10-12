@@ -1,4 +1,4 @@
-# A model registry in `ds4-serve spec` format: one row per servable model, 11 pipe-separated fields plus an
+# A model registry in the rig's spec format: one row per servable model, 11 pipe-separated fields plus an
 # optional 12th. This is the rig's single source of truth; tools/gen-swap-config.sh (llama-swap YAML) and
 # tools/gen-pi-models.py (pi, OMP and Codex catalogs) both derive from it. Use it with RIG_SPEC=<this file>.
 # These are the rows the author's Mac served on 2026-10-05 (per-machine KV-cache paths removed). GGUF paths are

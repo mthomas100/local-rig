@@ -5,7 +5,7 @@ reloading into a video render, and a serial plan → code → verify → review 
 
 ![A real terminal session on 2026-10-05: hold status shows a reel render holding the GPU; a chat-completions request to the gate gets 503 Service Unavailable with Retry-After 30; /running shows nothing loaded before and after; the gate's log records the refusal](docs/media/hold-live-session.svg)
 
-*A real session, replayed: on 2026-10-05 at 21:42 a [reel-studio](https://github.com/mthomas100/reel-studio)
+*A real session, replayed: on 2026-10-05 a [reel-studio](https://github.com/mthomas100/reel-studio)
 render held the GPU. A request that would have loaded an 80 GiB model got a 503 naming the holder, and nothing was
 loaded. Captured output: [docs/data/live-held-session-2026-10-05.txt](docs/data/live-held-session-2026-10-05.txt);
 SVG drawn by [make_terminal_svg.py](docs/charts/make_terminal_svg.py), no text reworded.*
@@ -142,9 +142,10 @@ What makes it robust rather than just a lock:
 
 ![Every hold in the gate's first day as horizontal bars: time waiting in the queue or for the drain and unload, then time holding the GPU; two reel-studio jobs waited 47 and 35 minutes](docs/media/hold-first-day.png)
 
-*Every hold from the gate's log, 2026-10-04 21:30 to 2026-10-05 21:18 ([data](docs/data/hold-gate-holds.csv)).
-The unload before a grant took 0.2 to 7.7 s ([data](docs/data/hold-gate-unloads.csv)). One caveat the log shows: at 22:05,
-during a 31 s drain, eight pi calls were refused (they retried) rather than waiting. A pi session waits only once it
+*Every hold from the gate's log in its first 24 hours, 2026-10-04 to 2026-10-05, timed from the moment it went live
+([data](docs/data/hold-gate-holds.csv)). The unload before a grant took 0.2 to 7.7 s
+([data](docs/data/hold-gate-unloads.csv)). One caveat the log shows: 35 minutes in, during a 31 s drain, eight pi
+calls were refused (they retried) rather than waiting. A pi session waits only once it
 has loaded `hold.ts`; sessions already open when the gate went in need `/reload`.*
 
 The CLI:
@@ -199,8 +200,8 @@ for review). Those rows have since been replaced by the pairing shown above, whi
 ## One model registry, generated configs
 
 Every model is one row in a registry: 11 pipe-separated fields (`target|engine|family|ctx|trust|dl|label|use|gguf|vision|drafter`)
-plus optional launch arguments. On the author's Mac the registry lives in `ds4-serve`, a launcher script in a local
-ds4 checkout; anywhere else, point `RIG_SPEC` at a file in the same format ([example](examples/registry.example)).
+plus optional launch arguments. On the author's Mac a model launcher script (not part of this repo) prints it; anywhere
+else, point `RIG_SPEC` at a file in the same format ([example](examples/registry.example)).
 Two generators derive everything else from it, so there is never a second model list to drift:
 
 - [`tools/gen-swap-config.sh`](tools/gen-swap-config.sh) writes `config/llama-swap.yaml`: commands per engine,
@@ -252,7 +253,7 @@ git clone https://github.com/mthomas100/local-rig ~/repos/local-rig
 cd ~/repos/local-rig
 git config core.hooksPath hooks
 
-# 1. describe your models (or use ds4-serve's registry via DS4_DIR)
+# 1. describe your models
 cp examples/registry.example my-registry      # edit: your GGUF paths, contexts, trust
 export RIG_SPEC=$PWD/my-registry DS4_DIR=~/repos/ds4   # DS4_DIR: where ds4-server, llama-server and gguf/ live
 
@@ -310,20 +311,18 @@ all pass
 
 ## Status and limitations
 
-- **One machine, in daily use.** The gate has been live on the author's Mac since 2026-10-04 21:30. It is not a
+- **One machine, in daily use.** The gate has been live on the author's Mac since 2026-10-04. It is not a
   general product: the GPU-job patterns in [`hold/procs.go`](hold/procs.go) name the author's tools (ltx-2-mlx,
   vidgen, mflux, hy3d, m3d stages). Edit `gpuJob()` for yours.
 - **`hold wait --timeout` rounds up to the gate's 30 s long poll:** `--timeout 5s` returned after 30.1 s on
   2026-10-05.
 - **macOS only.** Process liveness reads `ps -o lstart=`; the launchd jobs are macOS.
-- **The registry script is not included.** `ds4-serve` lives in a private ds4 checkout; `RIG_SPEC` plus
+- **Bring your own registry.** The author's model launcher is not part of this repo; `RIG_SPEC` plus
   `examples/registry.example` stand in for it. ds4-specific flags in the generator assume ds4's `ds4-server`.
 - **Codex and other non-pi clients are refused, not queued.** They see a 503 with `Retry-After: 30`; Codex retries.
   pi sessions opened before `hold.ts` was linked need `/reload` to wait instead.
 - **The gate's own restart cuts streams** that pass through it; restart only while `hold status` says open.
 - **/pcv timing** was measured once, on 2026-09-12, with models that have since been replaced.
-- Not included in this repo: a model-wiring skill for the author's machine, the web-research benchmark, and the
-  internal design brief the rig was built from.
 
 ## Related repos
 
